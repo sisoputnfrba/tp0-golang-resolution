@@ -1,5 +1,9 @@
 package globals
 
-import "client/utils"
+type Config struct {
+	Ip      string `json:"ip"`
+	Puerto  int    `json:"puerto"`
+	Mensaje string `json:"mensaje"`
+}
 
-var Config *utils.Config
+var ClientConfig *Config

@@ -3,6 +3,7 @@ package utils
 import (
 	"bufio"
 	"bytes"
+	"client/globals"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -10,12 +11,6 @@ import (
 	"net/http"
 	"os"
 )
-
-type Config struct {
-	Ip      string `json:"ip"`
-	Puerto  int    `json:"puerto"`
-	Mensaje string `json:"mensaje"`
-}
 
 type Mensaje struct {
 	Mensaje string `json:"mensaje"`
@@ -25,8 +20,8 @@ type Paquete struct {
 	Valores []string `json:"valores"`
 }
 
-func IniciarConfiguracion(filePath string) *Config {
-	var config *Config
+func IniciarConfiguracion(filePath string) *globals.Config {
+	var config *globals.Config
 	configFile, err := os.Open(filePath)
 	if err != nil {
 		log.Fatal(err.Error())
@@ -39,20 +34,33 @@ func IniciarConfiguracion(filePath string) *Config {
 	return config
 }
 
-func LeerConsola() {
+func LeerConsola() []string {
 	// Leer de la consola
+	mensajes := []string{}
 	reader := bufio.NewReader(os.Stdin)
-	log.Println("Ingrese los mensajes")
-	text, _ := reader.ReadString('\n')
-	log.Print(text)
+	for {
+		log.Println(">")
+		text, _ := reader.ReadString('\n')
+		if text == "\n" {
+			break
+		}
+		log.Print(text)
+		mensajes = append(mensajes, text)
+	}
+
+	return mensajes
 }
 
 func GenerarYEnviarPaquete() {
 	paquete := Paquete{}
+	log.Println("Generando paquete")
 	// Leemos y cargamos el paquete
+	mensajes := LeerConsola()
+	paquete.Valores = mensajes
 
 	log.Printf("paqute a enviar: %+v", paquete)
 	// Enviamos el paqute
+	EnviarPaquete(globals.ClientConfig.Ip, globals.ClientConfig.Puerto, paquete)
 }
 
 func EnviarMensaje(ip string, puerto int, mensajeTxt string) {
