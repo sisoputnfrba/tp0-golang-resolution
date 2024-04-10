@@ -27,8 +27,8 @@ func main() {
 	utils.EnviarMensaje(globals.ClientConfig.Ip, globals.ClientConfig.Puerto, globals.ClientConfig.Mensaje)
 
 	// leer de la consola el mensaje que queremos enviar
-	utils.LeerConsola()
+	mensajes := utils.LeerConsola()
 
 	// mandamos el paquetes al servidor
-	utils.GenerarYEnviarPaquete()
+	utils.GenerarYEnviarPaquete(mensajes)
 }
